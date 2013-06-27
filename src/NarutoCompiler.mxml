@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   creationComplete="initApp(event)"
+					   showStatusBar="false" minWidth="1024" minHeight="800">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[					
+			
+			import events.NarutoEvent;
+			import flash.desktop.ClipboardFormats;
+			import flash.desktop.NativeDragManager;
+			import flash.events.Event;
+			import flash.events.NativeDragEvent;
+			import flash.filesystem.File;
+			import flash.filesystem.FileStream;
+			import flash.utils.ByteArray;
+			import model.NarutoModel;
+			import mx.core.UIComponent;
+			
+			private var _model:NarutoModel;
+			private var _main:CompilerMain;
+			
+			protected function initApp(event:Event):void
+			{
+				var container:UIComponent = new UIComponent();
+				container.addChild(_main = new CompilerMain(_model = new NarutoModel()));
+				addElement(container);
+				
+				addEventListener(NativeDragEvent.NATIVE_DRAG_ENTER,dragEnterHandler);
+				addEventListener(NativeDragEvent.NATIVE_DRAG_DROP, dragDropHandler);
+			}
+			
+			/**
+			 * 拖进处理
+			 * */
+			private function dragEnterHandler(event:NativeDragEvent):void
+			{
+				if (!event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT)) return;
+				
+				NativeDragManager.acceptDragDrop(this);
+			}
+			
+			/**
+			 * 放开鼠标处理
+			 * */
+			private function dragDropHandler(event:NativeDragEvent):void
+			{
+				var list:Array = event.clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array;
+				for each(var file:File in list)
+				{
+					if (file.name == "air.xml")
+					{
+						reset(file); break;
+					}
+				}
+			}
+			
+			/**
+			 * 重置数据
+			 * @param	file	工具配置文件
+			 */
+			private function reset(file:File):void
+			{
+				_model.reset(file);
+			}
+			
+			private function clear():void
+			{
+				//TODO: 占位符
+			}
+			
+		]]>
+	</fx:Script>
+</s:WindowedApplication>
