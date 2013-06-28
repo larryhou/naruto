@@ -52,15 +52,12 @@ package
 			
 			var info:NativeProcessStartupInfo = new NativeProcessStartupInfo();
 			info.executable = _executable;
-			info.arguments = params;			
-			
-			dispatchEvent(new NarutoEvent(NarutoEvent.OUTPUT_DATA, _executable.nativePath + " " + params.join(" ")));
+			info.arguments = params;				
 			
 			_process = new NativeProcess();
 			_process.addEventListener(Event.STANDARD_OUTPUT_CLOSE, completeHandler);
 			_process.addEventListener(ProgressEvent.STANDARD_OUTPUT_DATA, outputHandler);
-			_process.addEventListener(NativeProcessExitEvent.EXIT, exitHandler);
-			dispatchEvent(new NarutoEvent(NarutoEvent.OUTPUT_DATA, "running:" + _process.running));
+			_process.addEventListener(NativeProcessExitEvent.EXIT, exitHandler);			
 			_process.start(info);
 		}
 		

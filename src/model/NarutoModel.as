@@ -207,7 +207,10 @@ package model
 		 */
 		public function compile(modules:Vector.<ModuleInfo>):void
 		{
+			log("running...");
+			
 			var scripts:Array = [];
+			scripts.push("@echo off");
 			scripts.push("svn update " + _root);
 			scripts.push("set kernel=" + _kernel.nativePath);
 			
@@ -225,9 +228,31 @@ package model
 			} 
 			catch(error:Error) 
 			{
-				dispatchEvent(new NarutoEvent(NarutoEvent.OUTPUT_DATA, error.toString()));
+				log(error.toString());
 			}
+		}
+		
+		/**
+		 * 输出日志信息
+		 * @param	msg	输出文本内容
+		 */
+		public function log(msg:String):void
+		{
+			var date:Date = new Date();
 			
+			var timestamp:Array = [];
+			timestamp.push(date.fullYear + "/" + format(date.month + 1) + "/" + format(date.date));
+			timestamp.push(format(date.hours) + ":" + format(date.minutes) + ":" + format(date.seconds));
+			
+			dispatchEvent(new NarutoEvent(NarutoEvent.OUTPUT_DATA, "[" + timestamp.join(" ") + "]" + msg));
+		}
+		
+		// 输出固定长度的数值
+		private function format(value:*, len:uint = 2):String
+		{
+			var result:String = String(value);
+			while (result.length < len) result = "0" + result;
+			return result;
 		}
 		
 		/**
@@ -265,15 +290,19 @@ package model
 		private function transfer(modules:Vector.<ModuleInfo>):void
 		{
 			var scripts:Array = [];
+			scripts.push("@echo off");
 			
 			var info:ModuleInfo, line:String;
 			for (var i:int = 0; i < modules.length; i++)
 			{
 				info = modules[i];
 				line = info.output + " " + "//" + _server.currentItem.ip + "/" + info.server;
-				scripts.push("copy /y /v " + line.replace(/\//g, "\\"));
+				line = "copy /y /v " + line.replace(/\//g, "\\")
+				scripts.push("echo " + line);
+				scripts.push(line);
 			}
 			
+			scripts.push("echo -----------------------------------------------------------------------------");
 			execute(scripts.join("\r\n"), null);
 		}
 		

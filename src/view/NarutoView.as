@@ -3,6 +3,7 @@ package view
 	import fl.controls.Button;
 	import fl.controls.CheckBox;
 	import fl.controls.ComboBox;
+	
 	import flash.display.Sprite;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
@@ -20,6 +21,7 @@ package view
 		private var _console:TextField;
 		
 		private var _serverlist:ComboBox;
+		private var _format:TextFormat;
 		
 		/**
 		 * 构造函数
@@ -27,7 +29,7 @@ package view
 		 */
 		public function NarutoView() 
 		{
-			
+			_format = new TextFormat("微软雅黑", 20, 0x666666, false);
 		}
 		
 		/**
@@ -35,12 +37,11 @@ package view
 		 */
 		public function init():void 
 		{
-			const MARGIN:uint = 5;
-			var format:TextFormat = new TextFormat("微软雅黑", 20, 0x666666, false);
+			const MARGIN:uint = 5;			
 			
 			_selectAllBtn = new CheckBox();
 			_selectAllBtn.label = "全选";
-			_selectAllBtn.setStyle("textFormat", format);
+			_selectAllBtn.setStyle("textFormat", _format);
 			_selectAllBtn.width = 100;
 			_selectAllBtn.height = 30;
 			_selectAllBtn.x = 100;
@@ -48,8 +49,8 @@ package view
 			addChild(_selectAllBtn);
 			
 			_serverlist = new ComboBox();
-			_serverlist.textField.setStyle("textFormat", format);
-			_serverlist.dropdown.setRendererStyle("textFormat", format);
+			_serverlist.textField.setStyle("textFormat", _format);
+			_serverlist.dropdown.setRendererStyle("textFormat", _format);
 			_serverlist.x = _selectAllBtn.x + _selectAllBtn.width + 5;
 			_serverlist.y = _selectAllBtn.y;
 			_serverlist.height = _selectAllBtn.height;
@@ -67,10 +68,10 @@ package view
 			addChild(_compileBtn);
 			
 			_console = new TextField();
-			format = new TextFormat("Lucida Console", 12, 0x006600);
-			format.leading = 5;
+			var fmt:TextFormat = new TextFormat("Lucida Console", 12, 0x006600);
+			fmt.leading = 5;
 			
-			_console.defaultTextFormat = format;
+			_console.defaultTextFormat = fmt;
 			_console.multiline = true;
 			_console.antiAliasType = AntiAliasType.ADVANCED;
 			_console.width = stage.stageWidth;
@@ -108,6 +109,12 @@ package view
 		 * 服务器列表
 		 */
 		public function get serverlist():ComboBox { return _serverlist; }
+
+		public function get format():TextFormat
+		{
+			return _format;
+		}
+
 	}
 
 }

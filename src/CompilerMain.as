@@ -1,16 +1,21 @@
 package  
 {
 	import com.larrio.controls.layout.VDragLayout;
+	
 	import events.NarutoEvent;
+	
 	import fl.controls.ComboBox;
 	import fl.data.DataProvider;
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
+	
 	import model.ModuleInfo;
 	import model.NarutoModel;
 	import model.ServerItemInfo;
+	
 	import view.ModuleItemRenderer;
 	import view.NarutoView;
 	
@@ -83,7 +88,10 @@ package
 				servers.addItem( { label: item.name + "#" + item.ip, value:item, index:i } );
 			}
 			
-			_view.serverlist.dataProvider = servers;
+			var combo:ComboBox = _view.serverlist;
+			
+			combo.dataProvider = servers;
+			combo.setStyle("textFormat", _view.format);
 		}
 		
 		/**
@@ -110,7 +118,7 @@ package
 			}
 			else
 			{
-				reset();
+				_model.plugin && reset();
 			}
 			
 			_view.serverlist.addEventListener(Event.CHANGE, serverHandler);
